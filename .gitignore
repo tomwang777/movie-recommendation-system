@@ -1,0 +1,6 @@
+.env
+embeddings_cache.npy
+embeddings_cache_meta.json
+__pycache__/
+*.pyc
+.DS_Store

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Recommender</title>
+  <style>
+    body {
+      max-width: 600px;
+      margin: 80px auto;
+      padding: 0 24px;
+      font-family: system-ui, sans-serif;
+      background: #fff;
+      color: #111;
+    }
+
+    h1 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      margin-bottom: 24px;
+      color: #111;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 32px;
+    }
+
+    input {
+      flex: 1;
+      padding: 10px 14px;
+      font-size: 0.95rem;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #111;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 0.95rem;
+      font-weight: 500;
+      background: #111;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    #results p {
+      padding: 12px 0;
+      border-bottom: 1px solid #f0f0f0;
+      font-size: 0.95rem;
+    }
+
+    #results p:last-child {
+      border-bottom: none;
+    }
+
+    .empty {
+      color: #999;
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Movie Recommender</h1>
+
+  <div class="row">
+    <input id="query" type="text" placeholder="funny sci-fi movies with aliens" />
+    <button id="btn" onclick="submit()">Search</button>
+  </div>
+
+  <div id="results"></div>
+
+  <script>
+    document.getElementById("query").addEventListener("keydown", e => {
+      if (e.key === "Enter") submit();
+    });
+
+    async function submit() {
+      const query = document.getElementById("query").value.trim();
+      if (!query) return;
+
+      const btn = document.getElementById("btn");
+      const results = document.getElementById("results");
+
+      btn.disabled = true;
+      results.innerHTML = "";
+
+      try {
+        const res = await fetch(`/recommend?query=${encodeURIComponent(query)}`);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.detail || "Request failed");
+
+        results.innerHTML = data.results.length
+          ? data.results.map(r => `<p>${r.title}</p>`).join("")
+          : `<p class="empty">No results found.</p>`;
+      } catch (err) {
+        results.innerHTML = `<p class="empty">${err.message}</p>`;
+      } finally {
+        btn.disabled = false;
+      }
+    }
+  </script>
+</body>
+</html>
