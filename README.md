@@ -39,19 +39,19 @@ During `docker build` the catalog gets embedded once and saved to a `.npy` file 
 - **Provider:** OpenAI
 - **Model:** `text-embedding-3-small`
 
-Before running, you need an OpenAI API key. Copy the example file and add your key:
+You need your own OpenAI API key to run this. Create a `.env` file in the project root before building:
 
 ```bash
 cp .env.example .env
 ```
 
-Then open `.env` and set:
+Open `.env` and fill in your key:
 
 ```
 OPENAI_API_KEY=sk-...
 ```
 
-The key is used during `docker build` to embed the movie catalog (one-time, costs under $0.01) and at runtime for each search query.
+The key is used during `docker build` to embed the movie catalog (one-time cost, under $0.01) and at runtime to embed each search query. You can create or find your API key at https://platform.openai.com/api-keys.
 
 ---
 
@@ -67,11 +67,7 @@ When you search, your query goes through the same model. The result is compared 
 
 ## Demo
 
-Add a screenshot before submitting — save it as `docs/demo.png` and replace this section with:
-
-```
 ![Demo](docs/demo.png)
-```
 
 ---
 
