@@ -69,7 +69,6 @@ class Recommender:
         return np.array(all_vecs, dtype=np.float32)
 
     def _rank(self, query: str, top_k: int) -> tuple[np.ndarray, np.ndarray]:
-        """Embed query and return (sorted row indices, scores) above MIN_SCORE."""
         resp = self.client.embeddings.create(model=EMBED_MODEL, input=[query])
         q = np.array(resp.data[0].embedding, dtype=np.float32)
         q /= max(float(np.linalg.norm(q)), 1e-9)
@@ -79,19 +78,6 @@ class Recommender:
         return top_idx[mask], scores[top_idx[mask]]
 
     def recommend(self, query: str, top_k: int = 10) -> list[dict]:
-        """Return top-k movies for a natural language query.
-
-        Args:
-            query: Natural language description, e.g. 'funny sci-fi with aliens'.
-            top_k: Maximum number of results to return.
-
-        Returns:
-            List of dicts with 'title', 'description', 'score'.
-            Empty list if no titles score above MIN_SCORE.
-
-        Raises:
-            ValueError: if query is empty or blank.
-        """
         if not query or not query.strip():
             raise ValueError("Query must not be empty.")
 
@@ -107,7 +93,6 @@ class Recommender:
         return results
 
     def search(self, query: str, top_n: int = 10) -> list[dict]:
-        """Extended version of recommend() used by the API — includes extra metadata."""
         if not query or not query.strip():
             raise ValueError("Query must not be empty.")
 
